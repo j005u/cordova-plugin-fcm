@@ -2,7 +2,9 @@
 > Extremely easy plug&play push notification plugin for Cordova applications with Google Firebase FCM.
 
 ## Authorship
-This is a fork from https://github.com/andrehtissot/cordova-plugin-fcm-with-dependecy-updated with modified behaviour on iOS to display notifications on iOS => 10 in the foreground.
+This is a fork from https://github.com/andrehtissot/cordova-plugin-fcm-with-dependecy-updated
+
+I've updated the dependencies somewhat and made notifications show even when the app is in the foreground on both iOS and Android.
 
 
 #### Version 2.1.2 (03/06/2017)
