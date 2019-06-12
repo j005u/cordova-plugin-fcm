@@ -308,5 +308,9 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
     return returnValue;
 }
 
++ (void)setLastPush:(NSData*) push;
+{
+    lastPush = push;
+}
 
 @end
