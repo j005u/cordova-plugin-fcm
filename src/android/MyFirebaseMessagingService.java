@@ -46,8 +46,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         data.put("wasTapped", false);
 
         if(remoteMessage.getNotification() != null){
-            data.put("title", remoteMessage.getNotification().getTitle());
-            data.put("body", remoteMessage.getNotification().getBody());
+            if(remoteMessage.getNotification().getTitle() != null) {
+              data.put("title", remoteMessage.getNotification().getTitle());
+            }
+            if(remoteMessage.getNotification().getBody() != null) {
+              data.put("body", remoteMessage.getNotification().getBody());
+            }
         }
 
         for (String key : remoteMessage.getData().keySet()) {
@@ -77,8 +81,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Resources resources = getApplicationContext().getResources();
-        int resourceId = resources.getIdentifier("fcm_push_icon", "drawable",
-           getApplicationContext().getPackageName());
+        int resourceId;
+        if(data.get("icon") != null) {
+          resourceId = resources.getIdentifier(data.get("icon").toString(), "drawable",
+             getApplicationContext().getPackageName());
+        }
+        else {
+          resourceId = resources.getIdentifier("fcm_push_icon", "drawable",
+             getApplicationContext().getPackageName());
+        }
         if(resourceId == 0) {
           resourceId = getApplicationInfo().icon;
         }
@@ -86,12 +97,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(resourceId)
-                .setContentTitle(title)
-                .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
                 .setChannelId("default_channel");
+
+        if(title != null) {
+          notificationBuilder.setContentTitle(title);
+        }
+        if(messageBody != null) {
+          notificationBuilder.setContentText(messageBody);
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
