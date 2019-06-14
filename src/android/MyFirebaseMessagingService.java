@@ -15,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 
 /**
  * Created by Felipe Echanique on 08/06/2016.
@@ -62,7 +63,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Log.d(TAG, "\tNotification Data: " + data.toString());
         FCMPlugin.sendPushPayload( data );
-        sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), data);
+        if(remoteMessage.getNotification() != null){
+          sendNotification(remoteMessage.getNotification(), data);
+        }
     }
     // [END receive_message]
 
@@ -71,7 +74,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String title, String messageBody, Map<String, Object> data) {
+    private void sendNotification(RemoteMessage.Notification notification, Map<String, Object> data) {
         Intent intent = new Intent(this, FCMPluginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         for (String key : data.keySet()) {
@@ -82,8 +85,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Resources resources = getApplicationContext().getResources();
         int resourceId;
-        if(data.get("icon") != null) {
-          resourceId = resources.getIdentifier(data.get("icon").toString(), "drawable",
+
+        if(notification.getIcon() != null) {
+          resourceId = resources.getIdentifier(notification.getIcon(), "drawable",
              getApplicationContext().getPackageName());
         }
         else {
@@ -102,11 +106,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent)
                 .setChannelId("default_channel");
 
-        if(title != null) {
-          notificationBuilder.setContentTitle(title);
+        if(notification.getTitle() != null) {
+          notificationBuilder.setContentTitle(notification.getTitle());
         }
-        if(messageBody != null) {
-          notificationBuilder.setContentText(messageBody);
+        if(notification.getBody() != null) {
+          notificationBuilder.setContentText(notification.getBody());
+        }
+
+        if(notification.getColor() != null) {
+          try { //invalid color string will throw
+            int color = Color.parseColor(notification.getColor());
+            notificationBuilder.setColor(color);
+          } catch (Exception e) {
+               // This will catch any exception, because they are all descended from Exception
+               System.out.println("Error " + e.getMessage());
+          }
+
         }
 
         NotificationManager notificationManager =
