@@ -64,7 +64,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "\tNotification Data: " + data.toString());
         FCMPlugin.sendPushPayload( data );
         if(remoteMessage.getNotification() != null){
-          sendNotification(remoteMessage.getNotification(), data);
+          sendNotification(remoteMessage, data);
         }
     }
     // [END receive_message]
@@ -74,7 +74,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(RemoteMessage.Notification notification, Map<String, Object> data) {
+    private void sendNotification(RemoteMessage message, Map<String, Object> data) {
+        RemoteMessage.Notification notification = message.getNotification();
         Intent intent = new Intent(this, FCMPluginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         for (String key : data.keySet()) {
@@ -127,6 +128,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(message.getMessageId(), 0, notificationBuilder.build());
     }
 }
