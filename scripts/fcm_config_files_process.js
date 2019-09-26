@@ -46,7 +46,7 @@ var PLATFORM = {
             'www/google-services.json',
             'google-services.json'
         ],
-        stringsXml: ANDROID_DIR_RES_VALUES_DIR + '/strings.xml'
+        stringsXml: ANDROID_DIR + '/app/src/main/res/values/strings.xml'
     }
 };
 
